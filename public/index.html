@@ -198,10 +198,19 @@
     .cash-brand {
       font-size: 22px;
       font-weight: 700;
-      letter-spacing: -0.5px;
+      letter-spacing: -0.3px;
       display: flex;
       align-items: center;
-      gap: 4px;
+      line-height: 1;
+      color: #ffffff;
+    }
+
+    .apple-glyph {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      font-size: 25px;
+      line-height: 1;
+      margin-right: 1px;
+      display: inline-block;
     }
 
     /* Foreground Venmo Debit Card */
@@ -413,7 +422,7 @@
     .pass-apple-store {
       width: 100%;
       height: 72px;
-      background: linear-gradient(180deg, #d8d8d8 0%, #ececec 100%);
+      background: linear-gradient(180deg, #bbbbbb 0%, #cecece 100%);
       border-radius: var(--card-radius);
       padding: 16px 20px;
       display: flex;
@@ -427,18 +436,26 @@
     .apple-store-brand {
       display: flex;
       align-items: center;
-      gap: 7px;
-      font-size: 17px;
+      font-size: 18px;
       font-weight: 600;
       letter-spacing: -0.3px;
-      color: #3a3a3c;
+      color: #48484a;
+      line-height: 1;
+    }
+
+    .apple-store-glyph {
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Display", sans-serif;
+      font-size: 20px;
+      line-height: 1;
+      margin-right: 5px;
+      color: #48484a;
     }
 
     /* Pass 3: Chipotle */
     .pass-chipotle {
       width: 100%;
       height: 72px;
-      background: #ffffff;
+      background: #F8F8F8;
       border-radius: var(--card-radius);
       padding: 16px 20px;
       display: flex;
@@ -450,16 +467,15 @@
     }
 
     .chipotle-badge {
-      background: #73120b;
+      background: #A21D16;
       color: #ffffff;
-      padding: 4px 10px;
+      padding: 5px 12px;
       border-radius: 6px;
       font-size: 13px;
       font-weight: 800;
-      letter-spacing: 1.5px;
-      display: flex;
-      align-items: center;
-      gap: 6px;
+      letter-spacing: 1.2px;
+      text-transform: uppercase;
+      line-height: 1.2;
     }
 
     /* Pass 4: GameStop Gift Card (Bottom Full Card) */
@@ -814,10 +830,7 @@
       <!-- Peeking Apple Cash Behind -->
       <div class="apple-cash-card">
         <div class="cash-brand">
-          <svg width="18" height="22" viewBox="0 0 170 170" fill="currentColor">
-            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.69-7.85-11.97-14.42-6.54-9.91-11.55-20.9-15.03-32.96-3.48-12.06-5.22-23.47-5.22-34.22 0-15.77 4.14-28.71 12.43-38.82 8.28-10.11 18.61-15.28 30.98-15.5 4.57 0 9.75 1.25 15.54 3.75 5.79 2.5 9.7 3.86 11.73 4.08 1.8-.22 5.82-1.63 12.07-4.23 6.25-2.6 11.33-3.8 15.24-3.6 11.53.65 20.92 5.06 28.18 13.23-10.02 6.1-14.97 14.71-14.86 25.83.11 8.82 3.59 16.22 10.45 22.21 6.86 5.99 15.02 9.3 24.49 9.91-2.07 6.42-4.58 12.79-7.53 19.12zM119.22 31.86c0-7.39 2.67-14.42 8.01-21.09 5.34-6.67 11.98-10.77 19.92-12.3 1.09 7.39-1.25 14.63-7.02 21.72-5.77 7.09-12.74 11.02-20.91 11.67z"/>
-          </svg>
-          <span>Cash</span>
+          <span class="apple-glyph"></span><span>Cash</span>
         </div>
       </div>
 
@@ -849,7 +862,7 @@
          ============================================ -->
     <div class="passes-container">
       
-      <!-- PASS 1: DELTA AIR LINES BOARDING PASS (The Mentalism Star!) -->
+      <!-- PASS 1: DELTA AIR LINES BOARDING PASS (Innocent Preview in Wallet Stack) -->
       <div class="pass-delta" id="deltaPassCard">
         <div class="delta-brand-row">
           <div class="delta-brand">
@@ -861,7 +874,7 @@
             </svg>
             <span class="delta-name">DELTA</span>
           </div>
-          <div class="delta-flight-num" id="thumbFlight">DL 264</div>
+          <div class="delta-flight-num" id="thumbFlightBadge">BOARDING PASS</div>
         </div>
 
         <div class="delta-route-row">
@@ -875,19 +888,23 @@
             <span>&bull;&bull;&bull;</span>
           </div>
           <div style="text-align:right;">
-            <div class="delta-route-code" id="thumbTo">CDG</div>
-            <div class="delta-route-city" id="thumbToCity">Paris</div>
+            <div class="delta-route-code" style="color: rgba(255,255,255,0.45); font-size: 24px; letter-spacing: 2px;">•••</div>
+            <div class="delta-route-city" style="color: rgba(255,255,255,0.45);">Scheduled</div>
           </div>
         </div>
 
         <div class="delta-meta-row">
           <div>
-            <div class="meta-sub-lbl">Passenger</div>
-            <div class="meta-sub-val" id="thumbPassenger">SWIFT / TAYLOR</div>
+            <div class="meta-sub-lbl">Flight</div>
+            <div class="meta-sub-val" id="thumbFlight">DL 264</div>
+          </div>
+          <div>
+            <div class="meta-sub-lbl">Gate</div>
+            <div class="meta-sub-val" id="thumbGate">B28</div>
           </div>
           <div style="text-align:right;">
-            <div class="meta-sub-lbl">Date</div>
-            <div class="meta-sub-val" id="thumbDate">24 NOV</div>
+            <div class="meta-sub-lbl">Status</div>
+            <div class="meta-sub-val" style="color: #30d158; font-weight: 700;">ON TIME</div>
           </div>
         </div>
       </div>
@@ -897,19 +914,14 @@
         <!-- PASS 2: APPLE STORE -->
         <div class="pass-apple-store">
           <div class="apple-store-brand">
-            <svg width="20" height="24" viewBox="0 0 170 170" fill="currentColor">
-              <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.69-7.85-11.97-14.42-6.54-9.91-11.55-20.9-15.03-32.96-3.48-12.06-5.22-23.47-5.22-34.22 0-15.77 4.14-28.71 12.43-38.82 8.28-10.11 18.61-15.28 30.98-15.5 4.57 0 9.75 1.25 15.54 3.75 5.79 2.5 9.7 3.86 11.73 4.08 1.8-.22 5.82-1.63 12.07-4.23 6.25-2.6 11.33-3.8 15.24-3.6 11.53.65 20.92 5.06 28.18 13.23-10.02 6.1-14.97 14.71-14.86 25.83.11 8.82 3.59 16.22 10.45 22.21 6.86 5.99 15.02 9.3 24.49 9.91-2.07 6.42-4.58 12.79-7.53 19.12zM119.22 31.86c0-7.39 2.67-14.42 8.01-21.09 5.34-6.67 11.98-10.77 19.92-12.3 1.09 7.39-1.25 14.63-7.02 21.72-5.77 7.09-12.74 11.02-20.91 11.67z"/>
-            </svg>
+            <span class="apple-store-glyph"></span>
             <span>Apple Store</span>
           </div>
         </div>
 
         <!-- PASS 3: CHIPOTLE -->
         <div class="pass-chipotle">
-          <div class="chipotle-badge">
-            <span>🌶️</span>
-            <span>CHIPOTLE</span>
-          </div>
+          <div class="chipotle-badge">CHIPOTLE</div>
         </div>
 
         <!-- PASS 4: GAMESTOP GIFT CARD -->
@@ -1008,7 +1020,7 @@
         <div class="passenger-banner">
           <div>
             <div class="passenger-lbl">Passenger</div>
-            <div class="passenger-val" id="modalPassenger">SWIFT / TAYLOR</div>
+            <div class="passenger-val" id="modalPassenger">DOLAN / ROBERT</div>
           </div>
           <div class="cabin-badge" id="modalZone">DELTA ONE</div>
         </div>
@@ -1047,7 +1059,7 @@
         <div class="barcode-svg-container" id="barcodeContainer">
           <svg id="aztecBarcodeSvg" viewBox="0 0 160 160" width="160" height="160"></svg>
         </div>
-        <div class="barcode-raw-str" id="barcodeRawText">M1SWIFT/TAYLOR EDL264 328Y001A0028 100</div>
+        <div class="barcode-raw-str" id="barcodeRawText">M1DOLAN / ROBERT EDL264 328Y001A0028 100</div>
       </div>
 
     </div>
@@ -1069,27 +1081,31 @@
     const passModal = document.getElementById("passModal");
     const modalDoneBtn = document.getElementById("modalDoneBtn");
 
-    // Render pass data into both thumbnail and modal
+    // Render pass data into both thumbnail (innocent preview) and modal (the big mentalism reveal)
     function renderPass(data) {
       if (!data) return;
       passData = data;
+      try {
+        localStorage.setItem("delta_pass", JSON.stringify(data));
+      } catch (_) {}
 
-      // Thumbnail in Wallet Stack
-      document.getElementById("thumbFlight").textContent = data.flight || "DL 264";
-      document.getElementById("thumbFrom").textContent = data.from || "JFK";
-      document.getElementById("thumbFromCity").textContent = data.fromCity || "New York";
-      document.getElementById("thumbTo").textContent = data.to || "CDG";
-      document.getElementById("thumbToCity").textContent = data.toCity || "Paris";
-      document.getElementById("thumbPassenger").textContent = data.passenger || "SWIFT / TAYLOR";
-      document.getElementById("thumbDate").textContent = data.date || "24 NOV";
+      // Thumbnail in Wallet Stack (INNOCENT - DO NOT REVEAL PASSENGER OR DESTINATION!)
+      const thumbFlight = document.getElementById("thumbFlight");
+      if (thumbFlight) thumbFlight.textContent = data.flight || "DL 264";
+      const thumbGate = document.getElementById("thumbGate");
+      if (thumbGate) thumbGate.textContent = data.gate || "B28";
+      const thumbFrom = document.getElementById("thumbFrom");
+      if (thumbFrom) thumbFrom.textContent = data.from || "JFK";
+      const thumbFromCity = document.getElementById("thumbFromCity");
+      if (thumbFromCity) thumbFromCity.textContent = data.fromCity || "New York";
 
-      // Full-screen Modal Pass
+      // Full-screen Modal Pass (THE BIG MENTALISM REVEAL!)
       document.getElementById("modalFlight").textContent = data.flight || "DL 264";
       document.getElementById("modalFrom").textContent = data.from || "JFK";
       document.getElementById("modalFromCity").textContent = (data.fromCity || "New York") + " (" + (data.from || "JFK") + ")";
       document.getElementById("modalTo").textContent = data.to || "CDG";
       document.getElementById("modalToCity").textContent = (data.toCity || "Paris") + " (" + (data.to || "CDG") + ")";
-      document.getElementById("modalPassenger").textContent = data.passenger || "SWIFT / TAYLOR";
+      document.getElementById("modalPassenger").textContent = data.passenger || "DOLAN / ROBERT";
       document.getElementById("modalDate").textContent = data.date || "24 NOV";
       document.getElementById("modalGate").textContent = data.gate || "B28";
       document.getElementById("modalTerminal").textContent = data.terminal || "T4";
@@ -1231,7 +1247,20 @@
       }, 2000);
     }
 
-    // Initialize
+    // Immediate startup: check localStorage for instant render, then sync from API
+    try {
+      const cached = localStorage.getItem("delta_pass");
+      if (cached) renderPass(JSON.parse(cached));
+    } catch (_) {}
+
+    fetch("/api/pass?t=" + Date.now(), { cache: "no-store" })
+      .then((res) => res.json())
+      .then((json) => {
+        if (json && json.pass) renderPass(json.pass);
+      })
+      .catch(() => {});
+
+    // Initialize Real-time stream
     connectSseStream();
   </script>
 </body>

@@ -128,8 +128,8 @@ const AIRPORTS = {
 // Default Boarding Pass State
 const DEFAULT_PASS = {
   airline: "DELTA",
-  passenger: "SWIFT / TAYLOR",
-  passengerDisplay: "Taylor Swift",
+  passenger: "DOLAN / ROBERT",
+  passengerDisplay: "Robert Dolan",
   from: "JFK",
   fromCity: "New York",
   to: "CDG",
@@ -145,11 +145,11 @@ const DEFAULT_PASS = {
   zone: "DELTA ONE",
   seat: "01A",
   classType: "FIRST CLASS",
-  barcode: "M1SWIFT/TAYLOR       EDL264 328Y001A0028 100",
+  barcode: "M1DOLAN/ROBERT        EDL264 328Y001A0028 100",
   updatedAt: Date.now()
 };
 
-const STATE_FILE = path.join(__dirname, "pass-state.json");
+const STATE_FILE = process.env.VERCEL ? "/tmp/pass-state.json" : path.join(__dirname, "pass-state.json");
 
 let currentPass = JSON.parse(JSON.stringify(DEFAULT_PASS));
 try {
@@ -158,6 +158,12 @@ try {
     currentPass = Object.assign({}, DEFAULT_PASS, JSON.parse(raw));
   }
 } catch (_) {}
+
+// Ensure initial passenger defaults to DOLAN / ROBERT if old Taylor Swift/Ryan Reynolds was saved
+if (currentPass.passenger === "SWIFT / TAYLOR" || currentPass.passenger === "REYNOLDS / RYAN") {
+  currentPass.passenger = "DOLAN / ROBERT";
+  currentPass.passengerDisplay = "Robert Dolan";
+}
 
 function saveState() {
   try {
@@ -272,6 +278,59 @@ function broadcastPassUpdate() {
   }
 }
 
+function updatePassFromData(b) {
+  // Accept flexible key names from Shortcuts: celebrity, passenger, name, vip, person
+  const rawCelebrity = b.celebrity || b.passenger || b.name || b.vip || b.person || b.who;
+  const rawTo = b.to || b.destination || b.dest || b.city || b.where || b.airport;
+  const rawFrom = b.from || b.origin;
+  const rawDate = b.date || b.when || b.day || b.flightDate;
+  const rawFlight = b.flight || b.flightNum;
+  const rawGate = b.gate;
+  const rawSeat = b.seat;
+
+  if (rawCelebrity) {
+    const p = formatPassengerName(rawCelebrity);
+    currentPass.passenger = p.airline;
+    currentPass.passengerDisplay = p.display;
+  }
+
+  if (rawTo) {
+    const dest = resolveDestination(rawTo);
+    currentPass.to = dest.code;
+    currentPass.toCity = dest.city;
+    currentPass.toAirportName = dest.name;
+    if (!rawFlight) currentPass.flight = dest.flight;
+    if (!rawGate) currentPass.gate = dest.gate;
+    currentPass.terminal = dest.term || "T4";
+  }
+
+  if (rawFrom) {
+    const orig = resolveOrigin(rawFrom);
+    currentPass.from = orig.code;
+    currentPass.fromCity = orig.city;
+  }
+
+  if (rawDate) {
+    const d = formatFlightDate(rawDate);
+    currentPass.date = d.short;
+    currentPass.dateFull = d.full;
+  }
+
+  if (rawFlight) currentPass.flight = String(rawFlight).toUpperCase();
+  if (rawGate) currentPass.gate = String(rawGate).toUpperCase();
+  if (rawSeat) currentPass.seat = String(rawSeat).toUpperCase();
+
+  // Generate authentic IATA BCBP barcode string
+  const cleanPassenger = (currentPass.passenger.replace(/[^A-Z\/ ]/g, "") + "                     ").slice(0, 20);
+  const cleanFlight = (currentPass.flight.replace(/\s+/g, "") + "       ").slice(0, 7);
+  currentPass.barcode = `M1${cleanPassenger}E${cleanFlight} 328Y001A0028 100`;
+
+  currentPass.updatedAt = Date.now();
+  saveState();
+  broadcastPassUpdate();
+  return currentPass;
+}
+
 // --- API Endpoints ---
 
 // 1. SSE Live Stream for sub-50ms instant PWA push
@@ -290,8 +349,21 @@ app.get("/api/pass/stream", (req, res) => {
   });
 });
 
-// 2. GET current boarding pass state
+// 2. GET current boarding pass state OR update via URL query parameters
+// Examples:
+//   GET /api/pass -> returns current pass JSON
+//   GET /api/pass?name=Robert+Dolan&to=Paris -> updates pass and returns it!
 app.get("/api/pass", (req, res) => {
+  const q = req.query || {};
+  const hasUpdate = q.name || q.celebrity || q.passenger || q.to || q.city || q.destination || q.date;
+  if (hasUpdate) {
+    try {
+      const updated = updatePassFromData(q);
+      return res.json({ ok: true, message: "Pass updated via query params", pass: updated });
+    } catch (err) {
+      return res.status(500).json({ ok: false, error: err.message });
+    }
+  }
   res.json({ ok: true, pass: currentPass });
 });
 
@@ -299,61 +371,11 @@ app.get("/api/pass", (req, res) => {
 app.post("/api/pass", (req, res) => {
   try {
     const b = req.body || {};
-    
-    // Accept flexible key names from Shortcuts: celebrity, passenger, name, vip, person
-    const rawCelebrity = b.celebrity || b.passenger || b.name || b.vip || b.person || b.who;
-    const rawTo = b.to || b.destination || b.dest || b.city || b.where || b.airport;
-    const rawFrom = b.from || b.origin || "JFK";
-    const rawDate = b.date || b.when || b.day || b.flightDate;
-    const rawFlight = b.flight || b.flightNum;
-    const rawGate = b.gate;
-    const rawSeat = b.seat;
-
-    if (rawCelebrity) {
-      const p = formatPassengerName(rawCelebrity);
-      currentPass.passenger = p.airline;
-      currentPass.passengerDisplay = p.display;
-    }
-
-    if (rawTo) {
-      const dest = resolveDestination(rawTo);
-      currentPass.to = dest.code;
-      currentPass.toCity = dest.city;
-      currentPass.toAirportName = dest.name;
-      if (!rawFlight) currentPass.flight = dest.flight;
-      if (!rawGate) currentPass.gate = dest.gate;
-      currentPass.terminal = dest.term || "T4";
-    }
-
-    if (rawFrom) {
-      const orig = resolveOrigin(rawFrom);
-      currentPass.from = orig.code;
-      currentPass.fromCity = orig.city;
-    }
-
-    if (rawDate) {
-      const d = formatFlightDate(rawDate);
-      currentPass.date = d.short;
-      currentPass.dateFull = d.full;
-    }
-
-    if (rawFlight) currentPass.flight = String(rawFlight).toUpperCase();
-    if (rawGate) currentPass.gate = String(rawGate).toUpperCase();
-    if (rawSeat) currentPass.seat = String(rawSeat).toUpperCase();
-
-    // Generate authentic IATA BCBP barcode string
-    const cleanPassenger = (currentPass.passenger.replace(/[^A-Z\/ ]/g, "") + "                     ").slice(0, 20);
-    const cleanFlight = (currentPass.flight.replace(/\s+/g, "") + "       ").slice(0, 7);
-    currentPass.barcode = `M1${cleanPassenger}E${cleanFlight} 328Y001A0028 100`;
-
-    currentPass.updatedAt = Date.now();
-    saveState();
-    broadcastPassUpdate();
-
+    const updated = updatePassFromData(b);
     res.json({
       ok: true,
       message: "Delta boarding pass updated successfully",
-      pass: currentPass
+      pass: updated
     });
   } catch (err) {
     res.status(500).json({ ok: false, error: err.message });
