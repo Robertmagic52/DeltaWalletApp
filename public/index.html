@@ -19,7 +19,7 @@
       --bg: #000000;
       --card-radius: 16px;
       --delta-navy: #001844;
-      --delta-dark: #000f2e;
+      --delta-dark: #000e2b;
       --delta-red: #E01933;
       --sf-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
     }
@@ -49,8 +49,8 @@
       inset: 0;
       overflow-y: scroll;
       -webkit-overflow-scrolling: touch;
-      padding-top: max(env(safe-area-inset-top), 20px);
-      padding-bottom: max(env(safe-area-inset-bottom, 24px), 32px);
+      padding-top: calc(env(safe-area-inset-top, 44px) + 8px);
+      padding-bottom: calc(env(safe-area-inset-bottom, 24px) + 40px);
       padding-left: 16px;
       padding-right: 16px;
     }
@@ -60,7 +60,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 4px 16px 4px;
+      padding: 6px 2px 14px 2px;
     }
 
     .wallet-title {
@@ -83,8 +83,8 @@
       background: #1c1c1e;
       border: none;
       color: #ffffff;
-      font-size: 21px;
-      font-weight: 400;
+      font-size: 22px;
+      font-weight: 300;
       display: flex;
       align-items: center;
       justify-content: center;
@@ -97,7 +97,7 @@
       border-radius: 18px;
       display: flex;
       align-items: center;
-      padding: 0 10px;
+      padding: 0 12px;
       gap: 12px;
     }
 
@@ -117,7 +117,8 @@
       display: flex;
       align-items: center;
       gap: 14px;
-      margin-bottom: 22px;
+      margin-top: 6px;
+      margin-bottom: 24px;
       position: relative;
     }
 
@@ -166,16 +167,23 @@
       margin-top: -2px;
     }
 
-    /* Payment Card Section */
+    /* =====================================
+       PAYMENT CARDS SECTION (CASH + VENMO)
+       ===================================== */
     .payment-section {
       position: relative;
+      width: 100%;
+      height: 250px;
       margin-bottom: 24px;
     }
 
     /* Peeking Apple Cash Behind */
     .apple-cash-card {
+      position: absolute;
+      top: 0;
+      left: 0;
       width: 100%;
-      height: 215px;
+      height: 200px;
       border-radius: var(--card-radius);
       background: #1c1c1e;
       padding: 16px 20px;
@@ -183,9 +191,6 @@
       flex-direction: column;
       justify-content: space-between;
       color: #ffffff;
-      position: absolute;
-      top: -30px;
-      left: 0;
       z-index: 1;
       box-shadow: 0 4px 16px rgba(0,0,0,0.5);
     }
@@ -201,17 +206,19 @@
 
     /* Foreground Venmo Debit Card */
     .venmo-card {
+      position: absolute;
+      top: 48px;
+      left: 0;
       width: 100%;
-      height: 216px;
+      height: 202px;
       border-radius: var(--card-radius);
-      background: linear-gradient(112deg, #0093e9 0%, #00c9a7 45%, #e0f827 100%);
-      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.6);
+      background: linear-gradient(115deg, #0088EB 0%, #00C69A 48%, #D4F725 100%);
+      box-shadow: 0 12px 32px rgba(0, 0, 0, 0.65);
       padding: 18px 22px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       color: #ffffff;
-      position: relative;
       z-index: 2;
       overflow: hidden;
       cursor: pointer;
@@ -224,19 +231,19 @@
     }
 
     .venmo-logo {
-      font-size: 28px;
+      font-size: 26px;
       font-weight: 800;
       font-style: italic;
       letter-spacing: -1px;
       color: #ffffff;
-      text-shadow: 0 1px 4px rgba(0,0,0,0.15);
+      text-shadow: 0 1px 3px rgba(0,0,0,0.15);
     }
 
     .venmo-debit {
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 600;
       color: rgba(255, 255, 255, 0.95);
-      letter-spacing: 0.5px;
+      letter-spacing: 0.3px;
       display: flex;
       align-items: center;
       gap: 4px;
@@ -249,9 +256,9 @@
     }
 
     .venmo-number {
-      font-size: 17px;
+      font-size: 16px;
       font-weight: 600;
-      letter-spacing: 1.5px;
+      letter-spacing: 2px;
       color: #ffffff;
       text-shadow: 0 1px 3px rgba(0,0,0,0.2);
     }
@@ -267,45 +274,40 @@
       height: 32px;
       border-radius: 50%;
     }
-    .mc-red { background: #EB001B; margin-right: -14px; }
+    .mc-red { background: #EB001B; margin-right: -13px; }
     .mc-orange { background: #F79E1B; opacity: 0.96; }
 
     /* =======================================
        PASSES SECTION (AUTHENTIC REPLICA STACK)
        ======================================= */
-    .passes-stack-container {
+    .passes-container {
       position: relative;
       width: 100%;
       margin-top: 10px;
-      padding-bottom: 120px;
+      padding-bottom: 90px;
     }
 
-    /* Common Pass Styles */
-    .pass-card {
-      width: 100%;
-      border-radius: var(--card-radius);
-      box-shadow: 0 6px 20px rgba(0, 0, 0, 0.45);
-      position: relative;
-      cursor: pointer;
-      overflow: hidden;
-      transition: transform 0.25s ease;
-    }
-
-    .pass-card:active {
-      transform: scale(0.985);
-    }
-
-    /* PASS 1: DELTA AIR LINES BOARDING PASS (The Mentalism Star!) */
+    /* Pass 1: DELTA AIR LINES BOARDING PASS (Fully visible hero pass) */
     .pass-delta {
+      width: 100%;
+      height: 184px;
       background: linear-gradient(180deg, var(--delta-navy) 0%, var(--delta-dark) 100%);
-      height: 196px;
-      z-index: 10;
+      border-radius: var(--card-radius);
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 16px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
       box-shadow: 0 12px 32px rgba(0, 24, 68, 0.65);
+      cursor: pointer;
+      position: relative;
+      z-index: 5;
+      margin-bottom: 14px;
+      transition: transform 0.2s ease;
+    }
+
+    .pass-delta:active {
+      transform: scale(0.985);
     }
 
     .delta-brand-row {
@@ -321,8 +323,8 @@
     }
 
     .delta-widget-svg {
-      width: 19px;
-      height: 19px;
+      width: 18px;
+      height: 18px;
     }
 
     .delta-name {
@@ -401,41 +403,50 @@
       margin-top: 2px;
     }
 
-    /* PASS 2: APPLE STORE */
+    /* Sub-Stack of Other Passes (Apple Store, Chipotle, GameStop) */
+    .sub-stack {
+      position: relative;
+      width: 100%;
+    }
+
+    /* Pass 2: Apple Store */
     .pass-apple-store {
+      width: 100%;
+      height: 72px;
       background: linear-gradient(180deg, #d8d8d8 0%, #ececec 100%);
-      color: #1c1c1e;
-      height: 180px;
-      margin-top: -128px;
-      z-index: 9;
+      border-radius: var(--card-radius);
       padding: 16px 20px;
       display: flex;
       align-items: flex-start;
-      gap: 8px;
-      border: 1px solid rgba(0,0,0,0.1);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      margin-bottom: -18px;
+      position: relative;
+      z-index: 2;
     }
 
     .apple-store-brand {
       display: flex;
       align-items: center;
       gap: 7px;
-      font-size: 18px;
+      font-size: 17px;
       font-weight: 600;
       letter-spacing: -0.3px;
       color: #3a3a3c;
     }
 
-    /* PASS 3: CHIPOTLE */
+    /* Pass 3: Chipotle */
     .pass-chipotle {
+      width: 100%;
+      height: 72px;
       background: #ffffff;
-      color: #1c1c1e;
-      height: 180px;
-      margin-top: -128px;
-      z-index: 8;
+      border-radius: var(--card-radius);
       padding: 16px 20px;
       display: flex;
       align-items: flex-start;
-      border: 1px solid rgba(0,0,0,0.08);
+      box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+      margin-bottom: -18px;
+      position: relative;
+      z-index: 3;
     }
 
     .chipotle-badge {
@@ -443,7 +454,7 @@
       color: #ffffff;
       padding: 4px 10px;
       border-radius: 6px;
-      font-size: 14px;
+      font-size: 13px;
       font-weight: 800;
       letter-spacing: 1.5px;
       display: flex;
@@ -451,18 +462,20 @@
       gap: 6px;
     }
 
-    /* PASS 4: GAMESTOP GIFT CARD */
+    /* Pass 4: GameStop Gift Card (Bottom Full Card) */
     .pass-gamestop {
+      width: 100%;
+      height: 330px;
       background: #ffffff;
-      color: #1c1c1e;
-      height: 380px;
-      margin-top: -128px;
-      z-index: 7;
+      border-radius: var(--card-radius);
       padding: 18px 20px;
       display: flex;
       flex-direction: column;
       justify-content: space-between;
-      border: 1px solid rgba(0,0,0,0.08);
+      color: #1c1c1e;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      position: relative;
+      z-index: 4;
     }
 
     .gamestop-top-row {
@@ -472,25 +485,23 @@
     }
 
     .gamestop-logo {
-      font-size: 24px;
+      font-size: 23px;
       font-weight: 900;
       letter-spacing: -0.5px;
     }
     .gs-black { color: #000000; }
     .gs-red { color: #E01933; }
 
-    .gamestop-bal {
-      text-align: right;
-    }
+    .gamestop-bal { text-align: right; }
     .gs-bal-lbl { font-size: 10px; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px; }
     .gs-bal-val { font-size: 15px; font-weight: 700; color: #000000; }
 
     .gamestop-card-img {
       width: 100%;
-      height: 130px;
+      height: 120px;
       background: #1c1c1e;
       border-radius: 12px;
-      margin: 14px 0;
+      margin: 12px 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -516,17 +527,17 @@
     }
 
     .gs-code-lbl { font-size: 10px; font-weight: 700; color: #8e8e93; letter-spacing: 0.5px; }
-    .gs-code-num { font-size: 15px; font-weight: 700; color: #000000; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
+    .gs-code-num { font-size: 14px; font-weight: 700; color: #000000; letter-spacing: 0.5px; font-family: ui-monospace, monospace; }
 
     /* Floating Search Button */
     .floating-search-btn {
       position: fixed;
-      bottom: max(env(safe-area-inset-bottom, 20px), 24px);
+      bottom: calc(env(safe-area-inset-bottom, 20px) + 20px);
       right: 20px;
-      width: 46px;
-      height: 46px;
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
-      background: rgba(142, 142, 147, 0.4);
+      background: rgba(142, 142, 147, 0.45);
       backdrop-filter: blur(25px);
       -webkit-backdrop-filter: blur(25px);
       border: 1px solid rgba(255, 255, 255, 0.15);
@@ -540,7 +551,7 @@
     }
 
     /* ========================================================
-       FULL-SCREEN EXPANDED BOARDING PASS MODAL (NATIVE PASSKIT)
+       FULL-SCREEN BOARDING PASS MODAL (AUTHENTIC PASSKIT)
        ======================================================== */
     .pass-modal {
       position: fixed;
@@ -552,9 +563,9 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: max(env(safe-area-inset-top), 16px) 16px max(env(safe-area-inset-bottom), 16px) 16px;
+      padding: calc(env(safe-area-inset-top, 40px) + 12px) 16px calc(env(safe-area-inset-bottom, 20px) + 12px) 16px;
       transform: translateY(105%);
-      transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.02);
+      transition: transform 0.38s cubic-bezier(0.18, 0.89, 0.32, 1.02);
       overflow-y: auto;
     }
 
@@ -834,12 +845,12 @@
     </div>
 
     <!-- ============================================
-         PASSES STACK (REPLICATING YOUR SCREEN RECORDING)
+         PASSES STACK (AUTHENTIC REPLICA OF YOUR SCREEN)
          ============================================ -->
-    <div class="passes-stack-container">
+    <div class="passes-container">
       
       <!-- PASS 1: DELTA AIR LINES BOARDING PASS (The Mentalism Star!) -->
-      <div class="pass-card pass-delta" id="deltaPassCard">
+      <div class="pass-delta" id="deltaPassCard">
         <div class="delta-brand-row">
           <div class="delta-brand">
             <!-- Delta Red Widget Triangle SVG -->
@@ -881,53 +892,56 @@
         </div>
       </div>
 
-      <!-- PASS 2: APPLE STORE -->
-      <div class="pass-card pass-apple-store">
-        <div class="apple-store-brand">
-          <svg width="20" height="24" viewBox="0 0 170 170" fill="currentColor">
-            <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.69-7.85-11.97-14.42-6.54-9.91-11.55-20.9-15.03-32.96-3.48-12.06-5.22-23.47-5.22-34.22 0-15.77 4.14-28.71 12.43-38.82 8.28-10.11 18.61-15.28 30.98-15.5 4.57 0 9.75 1.25 15.54 3.75 5.79 2.5 9.7 3.86 11.73 4.08 1.8-.22 5.82-1.63 12.07-4.23 6.25-2.6 11.33-3.8 15.24-3.6 11.53.65 20.92 5.06 28.18 13.23-10.02 6.1-14.97 14.71-14.86 25.83.11 8.82 3.59 16.22 10.45 22.21 6.86 5.99 15.02 9.3 24.49 9.91-2.07 6.42-4.58 12.79-7.53 19.12zM119.22 31.86c0-7.39 2.67-14.42 8.01-21.09 5.34-6.67 11.98-10.77 19.92-12.3 1.09 7.39-1.25 14.63-7.02 21.72-5.77 7.09-12.74 11.02-20.91 11.67z"/>
-          </svg>
-          <span>Apple Store</span>
-        </div>
-      </div>
-
-      <!-- PASS 3: CHIPOTLE -->
-      <div class="pass-card pass-chipotle">
-        <div class="chipotle-badge">
-          <span>🌶️</span>
-          <span>CHIPOTLE</span>
-        </div>
-      </div>
-
-      <!-- PASS 4: GAMESTOP GIFT CARD -->
-      <div class="pass-card pass-gamestop">
-        <div class="gamestop-top-row">
-          <div class="gamestop-logo">
-            <span class="gs-black">Game</span><span class="gs-red">Stop</span>
-          </div>
-          <div class="gamestop-bal">
-            <div class="gs-bal-lbl">BALANCE</div>
-            <div class="gs-bal-val">$0.00</div>
+      <!-- Sub-Stack of Other Passes (Apple Store, Chipotle, GameStop) -->
+      <div class="sub-stack">
+        <!-- PASS 2: APPLE STORE -->
+        <div class="pass-apple-store">
+          <div class="apple-store-brand">
+            <svg width="20" height="24" viewBox="0 0 170 170" fill="currentColor">
+              <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.69-7.85-11.97-14.42-6.54-9.91-11.55-20.9-15.03-32.96-3.48-12.06-5.22-23.47-5.22-34.22 0-15.77 4.14-28.71 12.43-38.82 8.28-10.11 18.61-15.28 30.98-15.5 4.57 0 9.75 1.25 15.54 3.75 5.79 2.5 9.7 3.86 11.73 4.08 1.8-.22 5.82-1.63 12.07-4.23 6.25-2.6 11.33-3.8 15.24-3.6 11.53.65 20.92 5.06 28.18 13.23-10.02 6.1-14.97 14.71-14.86 25.83.11 8.82 3.59 16.22 10.45 22.21 6.86 5.99 15.02 9.3 24.49 9.91-2.07 6.42-4.58 12.79-7.53 19.12zM119.22 31.86c0-7.39 2.67-14.42 8.01-21.09 5.34-6.67 11.98-10.77 19.92-12.3 1.09 7.39-1.25 14.63-7.02 21.72-5.77 7.09-12.74 11.02-20.91 11.67z"/>
+            </svg>
+            <span>Apple Store</span>
           </div>
         </div>
 
-        <!-- Mini Gift Card in Center -->
-        <div class="gamestop-card-img">
-          <div style="font-size:8px;font-weight:600;position:absolute;top:10px;right:14px;color:#8e8e93;">Gift Card</div>
-          <div class="gamestop-logo" style="font-size:20px;">
-            <span style="color:#fff;">Game</span><span class="gs-red">Stop</span>
+        <!-- PASS 3: CHIPOTLE -->
+        <div class="pass-chipotle">
+          <div class="chipotle-badge">
+            <span>🌶️</span>
+            <span>CHIPOTLE</span>
           </div>
-          <div class="gs-subtext">POWER TO THE PLAYERS&reg;</div>
         </div>
 
-        <div class="gamestop-code-row">
-          <div>
-            <div class="gs-code-lbl">CARD NUMBER</div>
-            <div class="gs-code-num">6364911005348179202</div>
+        <!-- PASS 4: GAMESTOP GIFT CARD -->
+        <div class="pass-gamestop">
+          <div class="gamestop-top-row">
+            <div class="gamestop-logo">
+              <span class="gs-black">Game</span><span class="gs-red">Stop</span>
+            </div>
+            <div class="gamestop-bal">
+              <div class="gs-bal-lbl">BALANCE</div>
+              <div class="gs-bal-val">$0.00</div>
+            </div>
           </div>
-          <div style="text-align:right;">
-            <div class="gs-code-lbl">PIN</div>
-            <div class="gs-code-num">0000</div>
+
+          <!-- Mini Gift Card in Center -->
+          <div class="gamestop-card-img">
+            <div style="font-size:8px;font-weight:600;position:absolute;top:10px;right:14px;color:#8e8e93;">Gift Card</div>
+            <div class="gamestop-logo" style="font-size:20px;">
+              <span style="color:#fff;">Game</span><span class="gs-red">Stop</span>
+            </div>
+            <div class="gs-subtext">POWER TO THE PLAYERS&reg;</div>
+          </div>
+
+          <div class="gamestop-code-row">
+            <div>
+              <div class="gs-code-lbl">CARD NUMBER</div>
+              <div class="gs-code-num">6364911005348179202</div>
+            </div>
+            <div style="text-align:right;">
+              <div class="gs-code-lbl">PIN</div>
+              <div class="gs-code-num">0000</div>
+            </div>
           </div>
         </div>
       </div>
@@ -1031,10 +1045,7 @@
       <!-- Bottom White Barcode Section (Scannable Aztec / 2D Barcode) -->
       <div class="card-bottom">
         <div class="barcode-svg-container" id="barcodeContainer">
-          <!-- Dynamically Generated High-Density Aztec / 2D Matrix Barcode -->
-          <svg id="aztecBarcodeSvg" viewBox="0 0 160 160" width="160" height="160">
-            <!-- Rendered by JavaScript -->
-          </svg>
+          <svg id="aztecBarcodeSvg" viewBox="0 0 160 160" width="160" height="160"></svg>
         </div>
         <div class="barcode-raw-str" id="barcodeRawText">M1SWIFT/TAYLOR EDL264 328Y001A0028 100</div>
       </div>
@@ -1096,7 +1107,7 @@
       if (!svg) return;
       svg.innerHTML = "";
 
-      const size = 33; // 33x33 grid
+      const size = 33;
       const center = Math.floor(size / 2);
       const cellSize = 160 / size;
 
@@ -1110,11 +1121,11 @@
         const dx = Math.abs(x - center);
         const dy = Math.abs(y - center);
         const maxD = Math.max(dx, dy);
-        if (maxD === 0) return true; // Center dot
+        if (maxD === 0) return true;
         if (maxD === 1) return false;
         if (maxD === 2) return true;
         if (maxD === 3) return false;
-        if (maxD === 4) return true; // Outer ring
+        if (maxD === 4) return true;
         return null;
       };
 
@@ -1142,7 +1153,7 @@
       }
     }
 
-    // Modal Interaction
+    // Modal Interaction (Supports click and instant touch)
     function openPassModal() {
       passModal.classList.add("open");
     }
@@ -1151,18 +1162,32 @@
       passModal.classList.remove("open");
     }
 
+    // Direct event listener on Delta card
     deltaPassCard.addEventListener("click", openPassModal);
+
+    let tapStartY = 0;
+    deltaPassCard.addEventListener("touchstart", (e) => {
+      tapStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    deltaPassCard.addEventListener("touchend", (e) => {
+      const dist = Math.abs(e.changedTouches[0].clientY - tapStartY);
+      if (dist < 10) {
+        openPassModal();
+      }
+    });
+
     modalDoneBtn.addEventListener("click", closePassModal);
 
     // Swipe down to dismiss
-    let touchStartY = 0;
+    let modalTouchStartY = 0;
     passModal.addEventListener("touchstart", (e) => {
-      touchStartY = e.touches[0].clientY;
+      modalTouchStartY = e.touches[0].clientY;
     }, { passive: true });
 
     passModal.addEventListener("touchmove", (e) => {
       const currentY = e.touches[0].clientY;
-      if (currentY - touchStartY > 90) {
+      if (currentY - modalTouchStartY > 80) {
         closePassModal();
       }
     }, { passive: true });
