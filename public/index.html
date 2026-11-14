@@ -109,71 +109,14 @@
       justify-content: center;
     }
 
-    /* "What's New in Wallet" Banner */
-    .whats-new-banner {
-      background: #1c1c1e;
-      border-radius: var(--card-radius);
-      padding: 14px 16px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      margin-top: 6px;
-      margin-bottom: 24px;
-      position: relative;
-    }
-
-    .banner-icon {
-      width: 44px;
-      height: 44px;
-      border-radius: 10px;
-      background: #000000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      flex-shrink: 0;
-    }
-
-    .banner-text {
-      flex: 1;
-    }
-
-    .banner-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #ffffff;
-      margin-bottom: 3px;
-    }
-
-    .banner-sub {
-      font-size: 13px;
-      font-weight: 400;
-      color: #8e8e93;
-      line-height: 1.35;
-    }
-
-    .banner-close {
-      width: 24px;
-      height: 24px;
-      border-radius: 50%;
-      background: #2c2c2e;
-      border: none;
-      color: #8e8e93;
-      font-size: 12px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      cursor: pointer;
-      align-self: flex-start;
-      margin-top: -2px;
-    }
-
     /* =====================================
        PAYMENT CARDS SECTION (CASH + VENMO)
        ===================================== */
     .payment-section {
       position: relative;
       width: 100%;
-      height: 250px;
+      height: 256px;
+      margin-top: 6px;
       margin-bottom: 24px;
     }
 
@@ -183,9 +126,10 @@
       top: 0;
       left: 0;
       width: 100%;
-      height: 200px;
+      height: 206px;
       border-radius: var(--card-radius);
-      background: #1c1c1e;
+      background: #111113;
+      border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 16px 20px;
       display: flex;
       flex-direction: column;
@@ -607,12 +551,16 @@
       font-weight: 600;
       cursor: pointer;
       font-family: var(--sf-font);
+      padding: 4px 0;
+      text-align: right;
+      width: 50px;
+      -webkit-tap-highlight-color: transparent;
     }
 
     .modal-drag-bar {
       width: 36px;
       height: 5px;
-      background: rgba(255, 255, 255, 0.3);
+      background: rgba(255, 255, 255, 0.35);
       border-radius: 3px;
     }
 
@@ -809,22 +757,6 @@
       </div>
     </div>
 
-    <!-- "What's New in Wallet" Banner -->
-    <div class="whats-new-banner" id="whatsNewBanner">
-      <div class="banner-icon">
-        <svg width="28" height="28" viewBox="0 0 100 80">
-          <rect x="10" y="8" width="80" height="50" rx="8" fill="#007aff"/>
-          <rect x="10" y="22" width="80" height="50" rx="8" fill="#ff9500"/>
-          <rect x="10" y="36" width="80" height="50" rx="8" fill="#34c759"/>
-        </svg>
-      </div>
-      <div class="banner-text">
-        <div class="banner-title">What's New in Wallet</div>
-        <div class="banner-sub">Create passes, split the bill, and learn about how Siri is enhancing Wallet.</div>
-      </div>
-      <button class="banner-close" type="button" onclick="document.getElementById('whatsNewBanner').style.display='none'">✕</button>
-    </div>
-
     <!-- Payment Cards Section -->
     <div class="payment-section">
       <!-- Peeking Apple Cash Behind -->
@@ -883,9 +815,11 @@
             <div class="delta-route-city" id="thumbFromCity">New York</div>
           </div>
           <div class="delta-arrow-box">
-            <span>&bull;&bull;&bull;</span>
-            <span class="delta-plane-icon">&#9992;</span>
-            <span>&bull;&bull;&bull;</span>
+            <span style="letter-spacing:1px;font-size:14px;color:rgba(255,255,255,0.25);">&bull;&bull;&bull;</span>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="#E01933" style="transform:rotate(90deg);margin:0 4px;">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+            <span style="letter-spacing:1px;font-size:14px;color:rgba(255,255,255,0.25);">&bull;&bull;&bull;</span>
           </div>
           <div style="text-align:right;">
             <div class="delta-route-code" style="color: rgba(255,255,255,0.45); font-size: 24px; letter-spacing: 2px;">•••</div>
@@ -975,6 +909,7 @@
        ======================================================== -->
   <div class="pass-modal" id="passModal">
     <div class="modal-header">
+      <div style="width: 50px;"></div>
       <div class="modal-drag-bar"></div>
       <button class="done-btn" id="modalDoneBtn" type="button">Done</button>
     </div>
@@ -1006,9 +941,11 @@
             <div class="route-city" id="modalFromCity">New York (JFK)</div>
           </div>
           <div class="delta-arrow-box">
-            <span style="letter-spacing:1px;">&bull;&bull;&bull;&bull;</span>
-            <span class="delta-plane-icon">&#9992;</span>
-            <span style="letter-spacing:1px;">&bull;&bull;&bull;&bull;</span>
+            <span style="letter-spacing:1px;font-size:14px;color:rgba(255,255,255,0.25);">&bull;&bull;&bull;</span>
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#E01933" style="transform:rotate(90deg);margin:0 6px;">
+              <path d="M21 16v-2l-8-5V3.5c0-.83-.67-1.5-1.5-1.5S10 2.67 10 3.5V9l-8 5v2l8-2.5V19l-2 1.5V22l3.5-1 3.5 1v-1.5L13 19v-5.5l8 2.5z"/>
+            </svg>
+            <span style="letter-spacing:1px;font-size:14px;color:rgba(255,255,255,0.25);">&bull;&bull;&bull;</span>
           </div>
           <div class="route-node" style="text-align:right;">
             <div class="route-code" id="modalTo">CDG</div>
