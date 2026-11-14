@@ -1,0 +1,13 @@
+{
+  "name": "delta-wallet-app",
+  "version": "1.0.0",
+  "description": "Hyper-realistic Apple Wallet Boarding Pass Prediction for Mentalism",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "cors": "^2.8.5",
+    "express": "^4.19.2"
+  }
+}

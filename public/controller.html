@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Delta Wallet Controller</title>
+  <style>
+    :root {
+      --bg: #121214;
+      --card-bg: #1c1c1e;
+      --border: #2c2c2e;
+      --accent: #E01933; /* Delta Red */
+      --blue: #0a84ff;
+      --green: #30d158;
+      --orange: #ff9f0a;
+      --sf-font: -apple-system, BlinkMacSystemFont, "SF Pro Text", -system-ui, sans-serif;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      background: var(--bg);
+      color: #ffffff;
+      font-family: var(--sf-font);
+      padding: 20px 16px 40px 16px;
+      max-width: 680px;
+      margin: 0 auto;
+      line-height: 1.5;
+    }
+
+    header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+      padding-bottom: 14px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .badge {
+      font-size: 11px;
+      font-weight: 700;
+      padding: 3px 8px;
+      border-radius: 6px;
+      background: rgba(48, 209, 88, 0.18);
+      color: var(--green);
+    }
+
+    .card {
+      background: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 14px;
+      padding: 16px 18px;
+      margin-bottom: 18px;
+    }
+
+    .card-title {
+      font-size: 14px;
+      font-weight: 700;
+      color: #8e8e93;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      margin-bottom: 12px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    /* Live Ticket Snapshot */
+    .snapshot-box {
+      background: #001844;
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 10px;
+      padding: 14px 16px;
+      margin-bottom: 8px;
+    }
+
+    .snapshot-route {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 24px;
+      font-weight: 800;
+      margin-bottom: 6px;
+    }
+
+    .snapshot-meta {
+      display: flex;
+      justify-content: space-between;
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.7);
+    }
+
+    /* Form Fields */
+    .field-group {
+      margin-bottom: 14px;
+    }
+
+    label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: #a1a1a6;
+      margin-bottom: 6px;
+    }
+
+    input, select {
+      width: 100%;
+      background: #000000;
+      border: 1px solid var(--border);
+      color: #ffffff;
+      padding: 10px 14px;
+      font-size: 15px;
+      border-radius: 9px;
+      outline: none;
+      font-family: inherit;
+      transition: border-color 0.2s ease;
+    }
+
+    input:focus, select:focus {
+      border-color: var(--blue);
+    }
+
+    /* Quick Click Pills */
+    .pills-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 8px;
+    }
+
+    .pill-btn {
+      background: #2c2c2e;
+      color: #ffffff;
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      border-radius: 20px;
+      padding: 6px 12px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.15s ease;
+    }
+
+    .pill-btn:hover {
+      background: #3a3a3c;
+    }
+
+    .pill-btn:active {
+      transform: scale(0.96);
+      background: var(--blue);
+    }
+
+    /* Action Buttons */
+    .btn-row {
+      display: flex;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    .btn-primary {
+      flex: 1;
+      background: var(--accent);
+      color: #ffffff;
+      border: none;
+      padding: 13px 18px;
+      font-size: 16px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      box-shadow: 0 4px 14px rgba(224, 25, 51, 0.35);
+    }
+
+    .btn-primary:active {
+      transform: scale(0.98);
+    }
+
+    .btn-secondary {
+      background: #2c2c2e;
+      color: #ffffff;
+      border: 1px solid var(--border);
+      padding: 13px 18px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 10px;
+      cursor: pointer;
+    }
+
+    /* Code block */
+    pre {
+      background: #000000;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      padding: 12px;
+      font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+      font-size: 12px;
+      color: #30d158;
+      overflow-x: auto;
+      margin: 8px 0;
+      line-height: 1.4;
+    }
+
+    /* Toast */
+    .toast {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(100px);
+      background: #30d158;
+      color: #000000;
+      font-weight: 700;
+      font-size: 14px;
+      padding: 10px 20px;
+      border-radius: 20px;
+      box-shadow: 0 8px 24px rgba(0,0,0,0.5);
+      transition: transform 0.25s cubic-bezier(0.2, 0.9, 0.3, 1);
+      z-index: 9999;
+    }
+
+    .toast.show {
+      transform: translateX(-50%) translateY(0);
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>✈️ Delta Boarding Pass Controller</h1>
+    <div class="badge" id="connStatus">SSE LIVE</div>
+  </header>
+
+  <!-- Live Snapshot Card -->
+  <div class="card">
+    <div class="card-title">
+      <span>Current Pass in Apple Wallet</span>
+      <a href="/" target="_blank" style="color:var(--blue);text-decoration:none;font-size:12px;">Open Wallet &rarr;</a>
+    </div>
+    <div class="snapshot-box">
+      <div class="snapshot-route">
+        <span id="snapFrom">JFK</span>
+        <span style="color:var(--accent);font-size:18px;">&bull;&bull;&bull; &#9992; &bull;&bull;&bull;</span>
+        <span id="snapTo">CDG</span>
+      </div>
+      <div class="snapshot-meta">
+        <div>Passenger: <b id="snapPassenger" style="color:#fff;">SWIFT / TAYLOR</b></div>
+        <div>Date: <b id="snapDate" style="color:#fff;">24 NOV</b></div>
+        <div>Flight: <b id="snapFlight" style="color:#fff;">DL 264</b></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick Dispatch Form -->
+  <div class="card">
+    <div class="card-title">Arm Boarding Pass Prediction</div>
+
+    <!-- 1. Celebrity Name -->
+    <div class="field-group">
+      <label>1. Celebrity Companion (Passenger Name)</label>
+      <input type="text" id="inCelebrity" placeholder="e.g. Taylor Swift, Zendaya, Ryan Reynolds">
+      <div class="pills-grid">
+        <button class="pill-btn" onclick="setCelebrity('Zendaya')">Zendaya</button>
+        <button class="pill-btn" onclick="setCelebrity('Taylor Swift')">Taylor Swift</button>
+        <button class="pill-btn" onclick="setCelebrity('Ryan Reynolds')">Ryan Reynolds</button>
+        <button class="pill-btn" onclick="setCelebrity('Leonardo DiCaprio')">Leonardo DiCaprio</button>
+        <button class="pill-btn" onclick="setCelebrity('Margot Robbie')">Margot Robbie</button>
+        <button class="pill-btn" onclick="setCelebrity('Pedro Pascal')">Pedro Pascal</button>
+        <button class="pill-btn" onclick="setCelebrity('Keanu Reeves')">Keanu Reeves</button>
+        <button class="pill-btn" onclick="setCelebrity('Drake')">Drake</button>
+      </div>
+    </div>
+
+    <!-- 2. Dream Destination -->
+    <div class="field-group">
+      <label>2. Dream Destination (City or IATA Code)</label>
+      <input type="text" id="inDestination" placeholder="e.g. Paris, Tokyo, Honolulu, Rome, London">
+      <div class="pills-grid">
+        <button class="pill-btn" onclick="setDest('Paris')">🇫🇷 Paris (CDG)</button>
+        <button class="pill-btn" onclick="setDest('Tokyo')">🇯🇵 Tokyo (HND)</button>
+        <button class="pill-btn" onclick="setDest('Rome')">🇮🇹 Rome (FCO)</button>
+        <button class="pill-btn" onclick="setDest('Honolulu')">🌺 Honolulu (HNL)</button>
+        <button class="pill-btn" onclick="setDest('London')">🇬🇧 London (LHR)</button>
+        <button class="pill-btn" onclick="setDest('Barcelona')">🇪🇸 Barcelona (BCN)</button>
+        <button class="pill-btn" onclick="setDest('Cancun')">🇲🇽 Cancun (CUN)</button>
+        <button class="pill-btn" onclick="setDest('Los Angeles')">🌴 Los Angeles (LAX)</button>
+        <button class="pill-btn" onclick="setDest('Las Vegas')">🎰 Las Vegas (LAS)</button>
+        <button class="pill-btn" onclick="setDest('Sydney')">🇦🇺 Sydney (SYD)</button>
+        <button class="pill-btn" onclick="setDest('Dubai')">🇦🇪 Dubai (DXB)</button>
+        <button class="pill-btn" onclick="setDest('Maui')">🏖️ Maui (OGG)</button>
+      </div>
+    </div>
+
+    <!-- 3. Flight Date -->
+    <div class="field-group">
+      <label>3. Flight Date</label>
+      <input type="text" id="inDate" placeholder="e.g. Nov 24, Tomorrow, Next Friday, or specific date">
+      <div class="pills-grid">
+        <button class="pill-btn" onclick="setDate('Today')">Today</button>
+        <button class="pill-btn" onclick="setDate('Tomorrow')">Tomorrow</button>
+        <button class="pill-btn" onclick="setDate('This Friday')">This Friday</button>
+        <button class="pill-btn" onclick="setDate('Nov 24')">Nov 24</button>
+        <button class="pill-btn" onclick="setDate('Dec 31')">New Year's Eve</button>
+      </div>
+    </div>
+
+    <!-- 4. Origin (Defaults to JFK) -->
+    <div class="field-group">
+      <label>4. Origin Airport</label>
+      <input type="text" id="inOrigin" value="JFK" placeholder="JFK, BOS, LAX, MIA">
+    </div>
+
+    <div class="btn-row">
+      <button class="btn-primary" id="pushBtn" onclick="pushPass()">⚡ Push to Apple Wallet</button>
+      <button class="btn-secondary" onclick="resetPass()">🔄 Reset</button>
+    </div>
+  </div>
+
+  <!-- iOS Shortcut Guide & Webhook Docs -->
+  <div class="card">
+    <div class="card-title">📲 Apple Shortcuts &amp; API Integration</div>
+    <p style="font-size:13px;color:#a1a1a6;margin-bottom:8px;">
+      To update this boarding pass from an <b>iOS Shortcut</b> (Siri dictation, Back Tap, Action Button, or Pre-Show Pal), configure a <code>Get Contents of URL</code> action:
+    </p>
+
+    <div style="font-size:12px;font-weight:700;color:#fff;margin-top:10px;">URL Endpoint:</div>
+    <pre id="apiEndpointUrl">POST /api/pass</pre>
+
+    <div style="font-size:12px;font-weight:700;color:#fff;margin-top:10px;">Shortcut JSON Request Body:</div>
+    <pre>{
+  "celebrity": "Zendaya",
+  "to": "Tokyo",
+  "date": "Nov 24"
+}</pre>
+
+    <div style="font-size:12px;font-weight:700;color:#fff;margin-top:10px;">Quick Test (cURL):</div>
+    <pre id="curlTestStr">curl -X POST http://localhost:3300/api/pass \
+  -H "Content-Type: application/json" \
+  -d '{"celebrity":"Taylor Swift","to":"Paris","date":"Nov 24"}'</pre>
+  </div>
+
+  <div class="toast" id="toastMsg">✓ Updated Apple Wallet!</div>
+
+  <script>
+    "use strict";
+
+    function setCelebrity(name) { document.getElementById("inCelebrity").value = name; }
+    function setDest(city) { document.getElementById("inDestination").value = city; }
+    function setDate(d) { document.getElementById("inDate").value = d; }
+
+    function showToast(txt) {
+      const t = document.getElementById("toastMsg");
+      t.textContent = txt || "✓ Updated!";
+      t.classList.add("show");
+      setTimeout(() => t.classList.remove("show"), 1800);
+    }
+
+    async function pushPass() {
+      const celebrity = document.getElementById("inCelebrity").value.trim();
+      const to = document.getElementById("inDestination").value.trim();
+      const date = document.getElementById("inDate").value.trim();
+      const from = document.getElementById("inOrigin").value.trim() || "JFK";
+
+      const btn = document.getElementById("pushBtn");
+      btn.textContent = "Pushing...";
+      btn.disabled = true;
+
+      try {
+        const res = await fetch("/api/pass", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ celebrity, to, date, from })
+        });
+        const data = await res.json();
+        if (data.ok) {
+          showToast(`⚡ Armed: ${data.pass.passenger} ➔ ${data.pass.to}`);
+        } else {
+          alert("Error: " + (data.error || "Failed"));
+        }
+      } catch (err) {
+        alert("Network Error: " + err.message);
+      } finally {
+        btn.textContent = "⚡ Push to Apple Wallet";
+        btn.disabled = false;
+      }
+    }
+
+    async function resetPass() {
+      try {
+        const res = await fetch("/api/pass/reset", { method: "POST" });
+        const data = await res.json();
+        if (data.ok) showToast("🔄 Reset to Demo Pass");
+      } catch (_) {}
+    }
+
+    function renderSnapshot(data) {
+      if (!data) return;
+      document.getElementById("snapFrom").textContent = data.from || "JFK";
+      document.getElementById("snapTo").textContent = data.to || "CDG";
+      document.getElementById("snapPassenger").textContent = data.passenger || "SWIFT / TAYLOR";
+      document.getElementById("snapDate").textContent = data.date || "24 NOV";
+      document.getElementById("snapFlight").textContent = data.flight || "DL 264";
+    }
+
+    // Live SSE Snapshot listener
+    const evtSource = new EventSource("/api/pass/stream");
+    evtSource.onmessage = (e) => {
+      try {
+        const d = JSON.parse(e.data);
+        renderSnapshot(d);
+      } catch (_) {}
+    };
+
+    // Update cURL example with current host
+    const origin = window.location.origin;
+    document.getElementById("apiEndpointUrl").textContent = `POST ${origin}/api/pass`;
+    document.getElementById("curlTestStr").textContent = `curl -X POST ${origin}/api/pass \\\n  -H "Content-Type: application/json" \\\n  -d '{"celebrity":"Taylor Swift","to":"Paris","date":"Nov 24"}'`;
+  </script>
+</body>
+</html>

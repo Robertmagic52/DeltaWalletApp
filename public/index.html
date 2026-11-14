@@ -1,0 +1,924 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Wallet</title>
+  
+  <!-- Standalone iOS PWA Settings -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="Wallet">
+  <meta name="theme-color" content="#000000">
+
+  <!-- Apple Wallet App Icon SVG Data URI -->
+  <link rel="apple-touch-icon" href="data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 180 180'><rect width='180' height='180' rx='40' fill='%23000'/><rect x='30' y='36' width='120' height='75' rx='12' fill='%23007aff'/><rect x='30' y='60' width='120' height='75' rx='12' fill='%23ff9500'/><rect x='30' y='84' width='120' height='75' rx='12' fill='%2334c759'/></svg>">
+
+  <style>
+    :root {
+      --bg: #000000;
+      --delta-navy: #001844;
+      --delta-dark: #00102e;
+      --delta-red: #E01933;
+      --delta-gold: #c5a059;
+      --sf-font: -apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      -webkit-user-select: none;
+    }
+
+    html, body {
+      background: var(--bg);
+      color: #ffffff;
+      font-family: var(--sf-font);
+      height: 100%;
+      width: 100%;
+      overflow: hidden;
+      position: fixed;
+    }
+
+    /* Full-height container with notch padding */
+    .wallet-container {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      padding-top: max(env(safe-area-inset-top), 20px);
+      padding-bottom: max(env(safe-area-inset-bottom), 20px);
+      padding-left: 16px;
+      padding-right: 16px;
+      overflow-y: auto;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    /* Top Wallet Navigation Bar */
+    .wallet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 12px 6px 18px 6px;
+      width: 100%;
+    }
+
+    .wallet-title {
+      font-size: 34px;
+      font-weight: 700;
+      letter-spacing: 0.37px;
+      color: #ffffff;
+    }
+
+    .wallet-plus-btn {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.16);
+      border: none;
+      color: #ffffff;
+      font-size: 20px;
+      font-weight: 400;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    /* Wallet Card Stack */
+    .card-stack {
+      position: relative;
+      width: 100%;
+      margin-top: 4px;
+    }
+
+    /* Card 1: Apple Card */
+    .apple-card {
+      width: 100%;
+      height: 204px;
+      border-radius: 16px;
+      background: linear-gradient(135deg, #eaeaea 0%, #f7f7f7 50%, #d8d8d8 100%);
+      box-shadow: 0 10px 28px rgba(0,0,0,0.45);
+      padding: 18px 22px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      color: #1c1c1e;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
+      transform: translateY(0);
+      transition: transform 0.3s cubic-bezier(0.2, 0.9, 0.3, 1);
+    }
+
+    .apple-card::before {
+      content: "";
+      position: absolute;
+      top: -30%;
+      left: -20%;
+      width: 140%;
+      height: 140%;
+      background: radial-gradient(circle at 30% 30%, rgba(255, 180, 200, 0.35), rgba(255, 220, 150, 0.25) 30%, rgba(180, 230, 255, 0.25) 60%, transparent 80%);
+      pointer-events: none;
+    }
+
+    .card-chip {
+      width: 38px;
+      height: 28px;
+      border-radius: 5px;
+      background: linear-gradient(135deg, #d4af37, #f3e5ab);
+      border: 1px solid rgba(0,0,0,0.15);
+      position: relative;
+    }
+
+    .apple-logo-laser {
+      font-size: 20px;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: #48484a;
+      letter-spacing: -0.5px;
+    }
+
+    .card-holder {
+      font-size: 13px;
+      font-weight: 500;
+      color: #636366;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Passes Header */
+    .passes-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 26px;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+
+    .passes-title {
+      font-size: 20px;
+      font-weight: 700;
+      color: #ffffff;
+      letter-spacing: 0.38px;
+    }
+
+    /* Stacked Delta Boarding Pass Thumbnail */
+    .delta-thumb-card {
+      width: 100%;
+      height: 200px;
+      background: linear-gradient(180deg, var(--delta-navy) 0%, var(--delta-dark) 100%);
+      border-radius: 16px;
+      padding: 16px 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      box-shadow: 0 12px 30px rgba(0, 24, 68, 0.55);
+      border: 1px solid rgba(255, 255, 255, 0.08);
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+      transition: transform 0.25s ease;
+    }
+
+    .delta-thumb-card:active {
+      transform: scale(0.98);
+    }
+
+    .delta-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .delta-brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .delta-widget-svg {
+      width: 18px;
+      height: 18px;
+    }
+
+    .delta-text {
+      font-size: 14px;
+      font-weight: 800;
+      letter-spacing: 1.5px;
+      color: #ffffff;
+    }
+
+    .delta-flight-badge {
+      font-size: 13px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.75);
+    }
+
+    /* Route Display */
+    .route-display {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 10px 0;
+    }
+
+    .route-node {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .route-code {
+      font-size: 34px;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      line-height: 1;
+    }
+
+    .route-city {
+      font-size: 12px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.65);
+      margin-top: 4px;
+      max-width: 120px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    .route-arrow {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      color: rgba(255, 255, 255, 0.35);
+      font-size: 16px;
+    }
+
+    .route-plane {
+      color: var(--delta-red);
+      font-size: 18px;
+      transform: rotate(90deg);
+    }
+
+    /* Pass Bottom Meta */
+    .thumb-bottom-meta {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-end;
+      padding-top: 8px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .meta-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .meta-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .meta-val {
+      font-size: 14px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 2px;
+      letter-spacing: 0.2px;
+    }
+
+    /* ========================================================
+       FULL-SCREEN EXPANDED BOARDING PASS MODAL (NATIVE WALLET)
+       ======================================================== */
+    .pass-modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.88);
+      backdrop-filter: blur(25px);
+      -webkit-backdrop-filter: blur(25px);
+      z-index: 1000;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: max(env(safe-area-inset-top), 16px) 16px max(env(safe-area-inset-bottom), 16px) 16px;
+      transform: translateY(105%);
+      transition: transform 0.4s cubic-bezier(0.18, 0.89, 0.32, 1.02);
+      overflow-y: auto;
+    }
+
+    .pass-modal.open {
+      transform: translateY(0);
+    }
+
+    /* Modal Navigation Header */
+    .modal-header {
+      width: 100%;
+      max-width: 360px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 12px;
+      padding: 0 4px;
+    }
+
+    .done-btn {
+      background: none;
+      border: none;
+      color: #0a84ff;
+      font-size: 17px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--sf-font);
+    }
+
+    .modal-drag-bar {
+      width: 36px;
+      height: 5px;
+      background: rgba(255, 255, 255, 0.3);
+      border-radius: 3px;
+    }
+
+    /* Main Boarding Pass Card */
+    .boarding-card {
+      width: 100%;
+      max-width: 360px;
+      background: linear-gradient(180deg, var(--delta-navy) 0%, #001235 100%);
+      border-radius: 20px;
+      box-shadow: 0 20px 48px rgba(0, 0, 0, 0.7);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+      margin-bottom: 24px;
+    }
+
+    /* Top Section */
+    .card-top {
+      padding: 22px 22px 16px 22px;
+      border-bottom: 1px dashed rgba(255, 255, 255, 0.18);
+      position: relative;
+    }
+
+    /* Punch holes on the side for ticket look */
+    .card-top::before, .card-top::after {
+      content: "";
+      position: absolute;
+      bottom: -11px;
+      width: 22px;
+      height: 22px;
+      background: rgba(0,0,0,0.88);
+      border-radius: 50%;
+      z-index: 2;
+    }
+    .card-top::before { left: -11px; }
+    .card-top::after { right: -11px; }
+
+    .card-flight-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 18px;
+    }
+
+    .delta-badge-full {
+      display: flex;
+      align-items: center;
+      gap: 9px;
+    }
+
+    .delta-badge-full .delta-text {
+      font-size: 16px;
+      font-weight: 800;
+      letter-spacing: 2px;
+    }
+
+    .flight-num-box {
+      text-align: right;
+    }
+
+    .flight-num-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.5px;
+    }
+
+    .flight-num-val {
+      font-size: 15px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    /* Large Route in Modal */
+    .modal-route {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin: 14px 0 20px 0;
+    }
+
+    .modal-route .route-code {
+      font-size: 42px;
+      font-weight: 800;
+      letter-spacing: -0.5px;
+    }
+
+    .modal-route .route-city {
+      font-size: 13px;
+      font-weight: 500;
+      color: rgba(255, 255, 255, 0.7);
+      margin-top: 4px;
+    }
+
+    /* Grid of Key Flight Meta */
+    .flight-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px 8px;
+      margin-top: 14px;
+      padding-top: 14px;
+      border-top: 1px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .flight-grid .meta-col {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .flight-grid .meta-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .flight-grid .meta-val {
+      font-size: 15px;
+      font-weight: 700;
+      color: #ffffff;
+      margin-top: 3px;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+
+    /* Celebrity Passenger Highlight Box */
+    .passenger-banner {
+      background: rgba(255, 255, 255, 0.08);
+      border-radius: 10px;
+      padding: 10px 14px;
+      margin-top: 16px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .passenger-lbl {
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255, 255, 255, 0.5);
+      letter-spacing: 0.6px;
+      text-transform: uppercase;
+    }
+
+    .passenger-val {
+      font-size: 16px;
+      font-weight: 800;
+      color: #ffffff;
+      letter-spacing: 0.5px;
+    }
+
+    .cabin-badge {
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      background: var(--delta-red);
+      color: #ffffff;
+      border-radius: 6px;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+    }
+
+    /* Bottom Barcode Section */
+    .card-bottom {
+      background: #ffffff;
+      padding: 24px 20px 22px 20px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      color: #000000;
+    }
+
+    .barcode-svg-container {
+      width: 180px;
+      height: 180px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 10px;
+    }
+
+    .barcode-raw-str {
+      font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, monospace;
+      font-size: 10px;
+      color: #636366;
+      letter-spacing: 1px;
+      text-align: center;
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    .brightness-notice {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      margin-top: 14px;
+      text-align: center;
+    }
+
+    /* Sync Indicator Dot */
+    .sync-dot {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: #30d158;
+      display: inline-block;
+      margin-right: 5px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ========================
+       APPLE WALLET HOME SCREEN
+       ======================== -->
+  <div class="wallet-container" id="walletHome">
+    <div class="wallet-header">
+      <div class="wallet-title">Wallet</div>
+      <button class="wallet-plus-btn" type="button" aria-label="Add Card">+</button>
+    </div>
+
+    <!-- Payment Cards Stack -->
+    <div class="card-stack">
+      <!-- Card 1: Apple Card -->
+      <div class="apple-card" id="appleCardEl">
+        <div style="display:flex;justify-content:space-between;align-items:center;">
+          <div class="apple-logo-laser">
+            <svg width="18" height="22" viewBox="0 0 170 170" fill="currentColor">
+              <path d="M150.37 130.25c-2.45 5.66-5.35 10.87-8.71 15.66-4.58 6.53-8.33 11.05-11.22 13.56-4.48 4.12-9.28 6.23-14.42 6.35-3.69 0-8.14-1.05-13.32-3.18-5.19-2.12-9.97-3.17-14.34-3.17-4.58 0-9.49 1.05-14.75 3.17-5.26 2.13-9.5 3.24-12.74 3.35-4.35.13-9.16-1.9-14.42-6.08-3.7-3.04-7.69-7.85-11.97-14.42-6.54-9.91-11.55-20.9-15.03-32.96-3.48-12.06-5.22-23.47-5.22-34.22 0-15.77 4.14-28.71 12.43-38.82 8.28-10.11 18.61-15.28 30.98-15.5 4.57 0 9.75 1.25 15.54 3.75 5.79 2.5 9.7 3.86 11.73 4.08 1.8-.22 5.82-1.63 12.07-4.23 6.25-2.6 11.33-3.8 15.24-3.6 11.53.65 20.92 5.06 28.18 13.23-10.02 6.1-14.97 14.71-14.86 25.83.11 8.82 3.59 16.22 10.45 22.21 6.86 5.99 15.02 9.3 24.49 9.91-2.07 6.42-4.58 12.79-7.53 19.12zM119.22 31.86c0-7.39 2.67-14.42 8.01-21.09 5.34-6.67 11.98-10.77 19.92-12.3 1.09 7.39-1.25 14.63-7.02 21.72-5.77 7.09-12.74 11.02-20.91 11.67z"/>
+            </svg>
+            <span>Card</span>
+          </div>
+          <div class="card-chip"></div>
+        </div>
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;">
+          <div class="card-holder">Robert Dolan</div>
+          <div style="font-size:12px;font-weight:700;color:#8e8e93;letter-spacing:1px;">TITANIUM</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Passes Section -->
+    <div class="passes-header">
+      <div class="passes-title">Passes &amp; Tickets</div>
+      <div style="font-size:12px;color:#8e8e93;display:flex;align-items:center;">
+        <span class="sync-dot" id="syncStatusDot"></span>
+        <span id="syncStatusText">Ready</span>
+      </div>
+    </div>
+
+    <!-- Delta Boarding Pass Thumbnail Card in Stack -->
+    <div class="delta-thumb-card" id="deltaThumbBtn">
+      <div class="delta-header-row">
+        <div class="delta-brand">
+          <!-- Delta Red Widget Triangle SVG -->
+          <svg class="delta-widget-svg" viewBox="0 0 100 85" fill="none">
+            <polygon points="50,0 100,85 0,85" fill="#E01933"/>
+            <polygon points="50,22 82,75 18,75" fill="#001844"/>
+            <polygon points="50,38 70,70 30,70" fill="#E01933"/>
+          </svg>
+          <span class="delta-text">DELTA</span>
+        </div>
+        <div class="delta-flight-badge" id="thumbFlight">DL 264</div>
+      </div>
+
+      <div class="route-display">
+        <div class="route-node">
+          <span class="route-code" id="thumbFrom">JFK</span>
+          <span class="route-city" id="thumbFromCity">New York</span>
+        </div>
+        <div class="route-arrow">
+          <span>&bull;&bull;&bull;</span>
+          <span class="route-plane">&#9992;</span>
+          <span>&bull;&bull;&bull;</span>
+        </div>
+        <div class="route-node" style="text-align:right;">
+          <span class="route-code" id="thumbTo">CDG</span>
+          <span class="route-city" id="thumbToCity">Paris</span>
+        </div>
+      </div>
+
+      <div class="thumb-bottom-meta">
+        <div class="meta-col">
+          <span class="meta-lbl">Passenger</span>
+          <span class="meta-val" id="thumbPassenger">SWIFT / TAYLOR</span>
+        </div>
+        <div class="meta-col" style="text-align:right;">
+          <span class="meta-lbl">Date</span>
+          <span class="meta-val" id="thumbDate">24 NOV</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ========================================================
+       FULL-SCREEN BOARDING PASS MODAL (AUTHENTIC NATIVE PASS)
+       ======================================================== -->
+  <div class="pass-modal" id="passModal">
+    <div class="modal-header">
+      <div class="modal-drag-bar"></div>
+      <button class="done-btn" id="modalDoneBtn" type="button">Done</button>
+    </div>
+
+    <!-- The Delta Air Lines Boarding Pass Card -->
+    <div class="boarding-card" id="boardingCard">
+      
+      <!-- Top Colored Section -->
+      <div class="card-top">
+        <div class="card-flight-row">
+          <div class="delta-badge-full">
+            <svg class="delta-widget-svg" viewBox="0 0 100 85" fill="none" style="width:22px;height:22px;">
+              <polygon points="50,0 100,85 0,85" fill="#E01933"/>
+              <polygon points="50,22 82,75 18,75" fill="#001844"/>
+              <polygon points="50,38 70,70 30,70" fill="#E01933"/>
+            </svg>
+            <span class="delta-text">DELTA</span>
+          </div>
+          <div class="flight-num-box">
+            <div class="flight-num-lbl">FLIGHT</div>
+            <div class="flight-num-val" id="modalFlight">DL 264</div>
+          </div>
+        </div>
+
+        <!-- Major Route Header -->
+        <div class="modal-route">
+          <div class="route-node">
+            <span class="route-code" id="modalFrom">JFK</span>
+            <span class="route-city" id="modalFromCity">New York (JFK)</span>
+          </div>
+          <div class="route-arrow">
+            <span style="letter-spacing:1px;">&bull;&bull;&bull;&bull;</span>
+            <span class="route-plane">&#9992;</span>
+            <span style="letter-spacing:1px;">&bull;&bull;&bull;&bull;</span>
+          </div>
+          <div class="route-node" style="text-align:right;">
+            <span class="route-code" id="modalTo">CDG</span>
+            <span class="route-city" id="modalToCity">Paris (CDG)</span>
+          </div>
+        </div>
+
+        <!-- Celebrity Passenger Banner -->
+        <div class="passenger-banner">
+          <div>
+            <div class="passenger-lbl">Passenger</div>
+            <div class="passenger-val" id="modalPassenger">SWIFT / TAYLOR</div>
+          </div>
+          <div class="cabin-badge" id="modalZone">DELTA ONE</div>
+        </div>
+
+        <!-- Flight Details Grid -->
+        <div class="flight-grid">
+          <div class="meta-col">
+            <span class="meta-lbl">Date</span>
+            <span class="meta-val" id="modalDate">24 NOV</span>
+          </div>
+          <div class="meta-col">
+            <span class="meta-lbl">Boarding</span>
+            <span class="meta-val" id="modalBoarding">5:45 PM</span>
+          </div>
+          <div class="meta-col">
+            <span class="meta-lbl">Gate</span>
+            <span class="meta-val" id="modalGate">B28</span>
+          </div>
+          <div class="meta-col">
+            <span class="meta-lbl">Terminal</span>
+            <span class="meta-val" id="modalTerminal">T4</span>
+          </div>
+          <div class="meta-col">
+            <span class="meta-lbl">Zone</span>
+            <span class="meta-val" style="color:#ffcc00;font-weight:800;">ZONE 1</span>
+          </div>
+          <div class="meta-col">
+            <span class="meta-lbl">Class</span>
+            <span class="meta-val">FIRST</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Bottom White Barcode Section (Scannable Aztec / 2D Barcode) -->
+      <div class="card-bottom">
+        <div class="barcode-svg-container" id="barcodeContainer">
+          <!-- Dynamically Generated High-Density Aztec / 2D Matrix Barcode -->
+          <svg id="aztecBarcodeSvg" viewBox="0 0 160 160" width="160" height="160">
+            <!-- Rendered by JavaScript -->
+          </svg>
+        </div>
+        <div class="barcode-raw-str" id="barcodeRawText">M1SWIFT/TAYLOR EDL264 328Y001A0028 100</div>
+      </div>
+
+    </div>
+
+    <div class="brightness-notice">
+      Double-tap title or swipe down to close
+    </div>
+  </div>
+
+  <script>
+    "use strict";
+
+    // State
+    let passData = null;
+
+    // Elements
+    const walletHome = document.getElementById("walletHome");
+    const deltaThumbBtn = document.getElementById("deltaThumbBtn");
+    const passModal = document.getElementById("passModal");
+    const modalDoneBtn = document.getElementById("modalDoneBtn");
+    const syncStatusDot = document.getElementById("syncStatusDot");
+    const syncStatusText = document.getElementById("syncStatusText");
+
+    // Render pass data into both thumbnail and modal
+    function renderPass(data) {
+      if (!data) return;
+      passData = data;
+
+      // Thumbnail in Wallet Stack
+      document.getElementById("thumbFlight").textContent = data.flight || "DL 264";
+      document.getElementById("thumbFrom").textContent = data.from || "JFK";
+      document.getElementById("thumbFromCity").textContent = data.fromCity || "New York";
+      document.getElementById("thumbTo").textContent = data.to || "CDG";
+      document.getElementById("thumbToCity").textContent = data.toCity || "Paris";
+      document.getElementById("thumbPassenger").textContent = data.passenger || "SWIFT / TAYLOR";
+      document.getElementById("thumbDate").textContent = data.date || "24 NOV";
+
+      // Full-screen Modal Pass
+      document.getElementById("modalFlight").textContent = data.flight || "DL 264";
+      document.getElementById("modalFrom").textContent = data.from || "JFK";
+      document.getElementById("modalFromCity").textContent = (data.fromCity || "New York") + " (" + (data.from || "JFK") + ")";
+      document.getElementById("modalTo").textContent = data.to || "CDG";
+      document.getElementById("modalToCity").textContent = (data.toCity || "Paris") + " (" + (data.to || "CDG") + ")";
+      document.getElementById("modalPassenger").textContent = data.passenger || "SWIFT / TAYLOR";
+      document.getElementById("modalDate").textContent = data.date || "24 NOV";
+      document.getElementById("modalGate").textContent = data.gate || "B28";
+      document.getElementById("modalTerminal").textContent = data.terminal || "T4";
+      document.getElementById("modalZone").textContent = data.zone || "DELTA ONE";
+      document.getElementById("modalBoarding").textContent = data.boardingTime || "5:45 PM";
+
+      const rawBarcode = data.barcode || `M1${(data.passenger || "").slice(0, 15)} E${data.flight} 328Y001A0028 100`;
+      document.getElementById("barcodeRawText").textContent = rawBarcode;
+      drawAztecMatrix(rawBarcode);
+    }
+
+    // Dynamic 2D Aztec-Style Barcode Generator (Pure SVG)
+    function drawAztecMatrix(seedText) {
+      const svg = document.getElementById("aztecBarcodeSvg");
+      if (!svg) return;
+      svg.innerHTML = "";
+
+      const size = 33; // 33x33 grid
+      const center = Math.floor(size / 2);
+      const cellSize = 160 / size;
+
+      // Simple deterministic hash based on payload string
+      let hash = 0;
+      for (let i = 0; i < seedText.length; i++) {
+        hash = ((hash << 5) - hash) + seedText.charCodeAt(i);
+        hash |= 0;
+      }
+
+      // Create Aztec bullseye in center (authentic concentric squares)
+      const isCenterBullseye = (x, y) => {
+        const dx = Math.abs(x - center);
+        const dy = Math.abs(y - center);
+        const maxD = Math.max(dx, dy);
+        if (maxD === 0) return true; // Center dot
+        if (maxD === 1) return false;
+        if (maxD === 2) return true;
+        if (maxD === 3) return false;
+        if (maxD === 4) return true; // Outer ring
+        return null;
+      };
+
+      for (let y = 0; y < size; y++) {
+        for (let x = 0; x < size; x++) {
+          let filled = false;
+          const bullseye = isCenterBullseye(x, y);
+          if (bullseye !== null) {
+            filled = bullseye;
+          } else {
+            // Pseudo-random pseudo-data matrix influenced by string hash + coordinates
+            const n = Math.sin(hash * 0.001 + (x * 17.3 + y * 31.7)) * 10000;
+            filled = (n - Math.floor(n)) > 0.48;
+          }
+
+          if (filled) {
+            const rect = document.createElementNS("http://www.w3.org/2000/svg", "rect");
+            rect.setAttribute("x", (x * cellSize).toFixed(2));
+            rect.setAttribute("y", (y * cellSize).toFixed(2));
+            rect.setAttribute("width", cellSize.toFixed(2));
+            rect.setAttribute("height", cellSize.toFixed(2));
+            rect.setAttribute("fill", "#000000");
+            svg.appendChild(rect);
+          }
+        }
+      }
+    }
+
+    // Modal Interaction
+    function openPassModal() {
+      passModal.classList.add("open");
+    }
+
+    function closePassModal() {
+      passModal.classList.remove("open");
+    }
+
+    deltaThumbBtn.addEventListener("click", openPassModal);
+    modalDoneBtn.addEventListener("click", closePassModal);
+
+    // Swipe down to dismiss
+    let touchStartY = 0;
+    passModal.addEventListener("touchstart", (e) => {
+      touchStartY = e.touches[0].clientY;
+    }, { passive: true });
+
+    passModal.addEventListener("touchmove", (e) => {
+      const currentY = e.touches[0].clientY;
+      if (currentY - touchStartY > 90) {
+        closePassModal();
+      }
+    }, { passive: true });
+
+    // Check URL parameters for Direct Pass Mode (e.g. ?direct=1 jumps straight to ticket)
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.get("direct") === "1" || urlParams.has("direct")) {
+      setTimeout(openPassModal, 150);
+    }
+
+    // --- Real-Time Server-Sent Events (SSE) Stream ---
+    function connectSseStream() {
+      if (!window.EventSource) {
+        fallbackPolling();
+        return;
+      }
+
+      const evtSource = new EventSource("/api/pass/stream");
+
+      evtSource.onopen = () => {
+        syncStatusDot.style.background = "#30d158";
+        syncStatusText.textContent = "Live 5G";
+      };
+
+      evtSource.onmessage = (event) => {
+        try {
+          const data = JSON.parse(event.data);
+          renderPass(data);
+          syncStatusDot.style.background = "#30d158";
+          syncStatusText.textContent = "Live 5G";
+        } catch (_) {}
+      };
+
+      evtSource.onerror = () => {
+        syncStatusDot.style.background = "#ff9f0a";
+        syncStatusText.textContent = "Reconnecting...";
+        evtSource.close();
+        setTimeout(connectSseStream, 3000);
+      };
+    }
+
+    // Fallback polling if SSE fails
+    function fallbackPolling() {
+      setInterval(async () => {
+        try {
+          const res = await fetch("/api/pass?t=" + Date.now(), { cache: "no-store" });
+          const json = await res.json();
+          if (json.ok && json.pass) renderPass(json.pass);
+        } catch (_) {}
+      }, 2000);
+    }
+
+    // Initialize
+    connectSseStream();
+  </script>
+</body>
+</html>
